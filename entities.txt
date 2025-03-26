@@ -1,0 +1,140 @@
+User
+{
+  _id: String,
+  firstname: String,
+  lastname: String,
+  email: String,
+  password: String,
+  createdAt: Datetime,
+  updatedAt: Datetime
+}
+
+
+Event {
+  _id: string;
+  title: string;
+  type: string;
+  description: string;
+  from: Date; 
+  until: Date;
+  createdBy: User;
+  organizers: [{
+    name:String,
+    email:String
+  }],
+  location: {
+    name: string;
+    address: string;
+    cost: number;
+  };
+  budget: {
+    venue: number;
+    catering: number;
+    equipment: number;
+    staff: number;
+    miscellaneous: number;
+  };
+  schedule: {
+    time: string;
+    activity: string;
+  }[];
+  requiredStaff: string[];
+  notes: string[];
+  createdBy: User;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+
+EventPlanDraft {
+  _id: string;
+  input: {
+    eventType: string;
+    from: Date,
+    until: Date,
+    location: string;
+    guestCount: number;
+    budget: number;
+    preferences: string[];
+    vibe: string;
+    specialRequests: string[];
+  };
+  suggestions: {
+    suggestedDate: string;
+    suggestedTime: string;
+    venues: {
+      name: string;
+      address: string;
+      estimatedCost: number;
+    }[];
+    budgetBreakdown: {
+      venue: number;
+      catering: number;
+      equipment: number;
+      staff: number;
+      miscellaneous: number;
+    };
+    requiredStaff: string[];
+    schedule: {
+      time: string;
+      activity: string;
+    }[];
+    notes: string[];
+  };
+  createdBy: User;
+  createdAt: Date;
+}
+
+
+Invitation
+{
+  _id: String,
+  event: String (references Event, required),
+  email: String,
+  status: Enum('pending', 'accepted', 'declined'),
+  token: String,
+  sentAt: Date;
+  respondedAt?: Date;
+  createdAt: Datetime,
+  updatedAt: Datetime
+}
+
+
+Participant
+{
+  _id: String,
+  event: String (references Event, required),
+  email: String,
+  notes:String,
+  dietaryRestrictions:String,
+  checkedIn: boolean,
+  createdAt: Datetime,
+  updatedAt: Datetime
+}
+
+
+Feedback
+{
+  _id: String,
+  event: Event,
+  email ?: String,
+  rating: Number (1-5, required),
+  comment: String,
+  createdAt: Datetime,
+  updatedAt: Datetime
+}
+
+
+Report
+{
+  _id: String,
+  event: Event,
+  attendanceCount: Number,
+  averageRating: number,
+  topFeedback: String,
+  budgetUsed: Number,
+  summary: String,
+  issues: string[],
+  createdAt: Datetime,
+  updatedAt: Datetime
+}
