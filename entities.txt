@@ -40,7 +40,6 @@ Event {
   }[];
   requiredStaff: string[];
   notes: string[];
-  createdBy: User;
   createdAt: Date;
   updatedAt: Date;
 }
