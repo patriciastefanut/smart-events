@@ -92,7 +92,7 @@ Invitation
   email: String,
   status: Enum('pending', 'accepted', 'declined'),
   token: String,
-  sentAt: Date;
+  sendAt: Date;
   respondedAt?: Date;
   createdAt: Datetime,
   updatedAt: Datetime
