@@ -18,4 +18,6 @@ const invitationSchema = new mongoose.Schema(
   }
 );
 
+invitationSchema.index({event: -1, email: 1}, {unique: true});
+
 export default mongoose.model("Invitation", invitationSchema);

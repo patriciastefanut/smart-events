@@ -9,6 +9,7 @@ const eventSchema = new mongoose.Schema(
     until: { type: Date, required: true },
     guestCount: { type: Number, required: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    uuid: {type: String, required: true, unique: true},
     location: {
       name: { type: String, required: true },
       address: { type: String, required: true },
