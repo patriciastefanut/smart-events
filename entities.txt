@@ -129,7 +129,7 @@ Report
   _id: String,
   event: Event,
   attendanceCount: Number,
-  averageRating: number,
+  averageRating: Number,
   topFeedback: String,
   budgetUsed: Number,
   summary: String,
