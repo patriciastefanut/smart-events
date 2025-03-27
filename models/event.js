@@ -3,9 +3,11 @@ import mongoose from "mongoose";
 const eventSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
+    type: { type: String, required: true },
     decription: { type: String, required: true },
     from: { type: Date, required: true },
     until: { type: Date, required: true },
+    guestCount: { type: Number, required: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     location: {
       name: { type: String, required: true },
@@ -25,8 +27,8 @@ const eventSchema = new mongoose.Schema(
         activity: { type: String, required: true },
       },
     ],
-    requiredStaff: [{ type: String }],
-    notes: [{ type: String }],
+    requiredStaff: [{ type: String, required: true }],
+    notes: [{ type: String, required: true }],
   },
   {
     timestamps: true,
