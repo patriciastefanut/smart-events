@@ -23,4 +23,26 @@ const register = async (req, res) => {
   }
 };
 
-export default { register };
+const login = async (req, res) => {
+  try {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array().map(err => err.msg) });
+    }
+
+    const token = await authService.login(req.body);
+
+    res.status(200).json({
+      message: "User logged in",
+      token,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({
+      message: err.message || "Internal Server error.",
+    });
+  }
+};
+
+export default { register, login };

@@ -15,4 +15,14 @@ router.post(
   authController.register
 );
 
+router.post(
+  "/login",
+  [
+    body("email").isEmail().withMessage("Email is required.").normalizeEmail(),
+    body("password").notEmpty().withMessage("Password is required."),
+  ],
+  authController.login
+);
+
+
 export default router;
