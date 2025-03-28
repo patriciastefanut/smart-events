@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/user.js";
+import user from "../models/user.js";
 
 const getJwt = (payload) => {
   const JWT_SECRET = process.env.JWT_SECRET;
@@ -27,8 +28,10 @@ const register = async (data) => {
     password: hashedPassword,
   });
 
-  const token = getJwt({ id: user._id, email: user.email });
-  return token;
+  return {
+    token: getJwt({ id: user._id, email: user.email }),
+    userId: user._id
+  };
 };
 
 const login = async (data) => {
@@ -47,8 +50,10 @@ const login = async (data) => {
     throw new Error("Incorrect password.");
   }
 
-  const token = getJwt({ id: existingUser._id, email: existingUser.email });
-  return token;
+  return {
+    token: getJwt({ id: existingUser._id, email: existingUser.email }),
+    userId: existingUser._id
+  };
 };
 
 export default { register, login };

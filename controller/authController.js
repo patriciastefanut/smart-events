@@ -11,10 +11,7 @@ const register = async (req, res) => {
 
     const token = await authService.register(req.body);
 
-    res.status(201).json({
-      message: "User registered",
-      token,
-    });
+    res.status(201).json(data);
   } catch (err) {
     console.log(err);
     res.status(400).json({
@@ -31,12 +28,9 @@ const login = async (req, res) => {
       return res.status(400).json({ errors: errors.array().map(err => err.msg) });
     }
 
-    const token = await authService.login(req.body);
+    const data = await authService.login(req.body);
 
-    res.status(200).json({
-      message: "User logged in",
-      token,
-    });
+    res.status(200).json(data);
   } catch (err) {
     console.log(err);
     res.status(400).json({

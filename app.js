@@ -3,6 +3,7 @@ import express from "express";
 import connectToDb from "./db.js";
 
 import authRouter from "./router/authRouter.js";
+import userRouter from './router/userRouter.js';
 
 dotenv.config();
 
@@ -18,9 +19,10 @@ app.get("/test", (req, res) => {
   res.status(200).json({ message: "Working." });
 });
 app.use("/api", authRouter);
+app.use('/api/users', userRouter);
 
 app.use((req, res) => {
-  res.status(404).json({ message: "Not found." });
+  res.status(404).json({ message: "Route not found." });
 });
 
 app.listen(PORT, () => {
