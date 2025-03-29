@@ -1,6 +1,6 @@
 import userService from "../service/userService.js";
 
-const getUser = async (req, res) => {
+const getUser = async (req, res, next) => {
   try {
     const userId = req.params.userId;
 
@@ -9,10 +9,20 @@ const getUser = async (req, res) => {
       user,
     });
   } catch (err) {
-    res.status(err.statusCode || 500).json({
-      message: err.message,
-    });
+    next(err);
   }
 };
 
-export default { getUser };
+const updateUser = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    const user = await userService.updateUser(userId, req.body);
+    res.status(200).json({
+      user,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { getUser, updateUser };
