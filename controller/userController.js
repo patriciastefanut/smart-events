@@ -25,4 +25,16 @@ const updateUser = async (req, res, next) => {
   }
 };
 
-export default { getUser, updateUser };
+const updatePassword = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    await userService.updatePassword(userId, req.body);
+    res.status(200).json({
+      message: "Password updated",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { getUser, updateUser, updatePassword };

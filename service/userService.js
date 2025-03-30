@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import User from "../models/user.js";
 import AppError from "../utils/AppError.js";
 
@@ -32,4 +33,23 @@ const updateUser = async (id, data) => {
   return updated;
 };
 
-export default { getUser, updateUser };
+const updatePassword = async (id, data) => {
+  const user = await User.findById(id);
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  const isCorrectPassword = await bcrypt.compare(
+    data.currentPassword,
+    user.password
+  );
+  if (!isCorrectPassword) {
+    throw new AppError("Incorrect password.", 403);
+  }
+
+  const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+  user.password = hashedPassword;
+  await user.save();
+};
+
+export default { getUser, updateUser, updatePassword };
