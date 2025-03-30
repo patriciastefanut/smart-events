@@ -9,7 +9,7 @@ const register = async (req, res) => {
       return res.status(400).json({ errors: errors.array().map(err => err.msg) });
     }
 
-    const token = await authService.register(req.body);
+    const data = await authService.register(req.body);
 
     res.status(201).json(data);
   } catch (err) {
