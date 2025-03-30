@@ -68,8 +68,6 @@ const addProfilePicture = async (id, file) => {
     throw new AppError("User not found", 404);
   }
 
-  console.log(file);
-
   const profilePicture = `./uploads/${user.profilePicture}`;
   const exists = await fileExists(profilePicture);
 

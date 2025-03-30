@@ -2,11 +2,15 @@ import express from "express";
 import { body } from "express-validator";
 import upload from "../utils/multer.js";
 import userController from "../controller/userController.js";
+import authMiddleware from "../middleware/authMiddleware.js";
+import currentUserMiddleware from "../middleware/currentUserMiddleware.js";
 
 
 const router = express.Router();
 
-router.get("/:userId", userController.getUser);
+router.use(authMiddleware);
+
+router.get("/:userId", currentUserMiddleware, userController.getUser);
 router.patch(
   "/:userId",
   [
@@ -34,6 +38,10 @@ router.patch(
   userController.updatePassword
 );
 
-router.post('/:userId/profile-picture', upload.single('image'), userController.addProfilePicture)
+router.post(
+  "/:userId/profile-picture",
+  upload.single("image"),
+  userController.addProfilePicture
+);
 
 export default router;
