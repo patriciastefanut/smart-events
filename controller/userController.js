@@ -1,4 +1,5 @@
 import userService from "../service/userService.js";
+import AppError from "../utils/AppError.js";
 
 const getUser = async (req, res, next) => {
   try {
@@ -37,4 +38,25 @@ const updatePassword = async (req, res, next) => {
   }
 };
 
-export default { getUser, updateUser, updatePassword };
+const addProfilePicture = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      throw new AppError("No image provided", 422);
+    }
+
+    const userId = req.params.userId;
+
+    const profilePicture = await userService.addProfilePicture(
+      userId,
+      req.file
+    );
+
+    res.status(200).json({
+      profilePicture,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { getUser, updateUser, updatePassword, addProfilePicture };

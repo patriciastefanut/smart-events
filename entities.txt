@@ -5,6 +5,7 @@ User
   lastname: String,
   email: String,
   password: String,
+  profilePicture: String,
   createdAt: Datetime,
   updatedAt: Datetime
 }

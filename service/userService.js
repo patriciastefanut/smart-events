@@ -1,6 +1,16 @@
+import fs from "fs/promises";
 import bcrypt from "bcrypt";
 import User from "../models/user.js";
 import AppError from "../utils/AppError.js";
+
+const fileExists = async (filePath) => {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
 
 const getUser = async (id) => {
   const user = await User.findById(id);
@@ -52,4 +62,25 @@ const updatePassword = async (id, data) => {
   await user.save();
 };
 
-export default { getUser, updateUser, updatePassword };
+const addProfilePicture = async (id, file) => {
+  const user = await User.findById(id);
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  console.log(file);
+
+  const profilePicture = `./uploads/${user.profilePicture}`;
+  const exists = await fileExists(profilePicture);
+
+  if (exists) {
+    await fs.unlink(profilePicture);
+  }
+
+  user.profilePicture = file.filename;
+  await user.save();
+
+  return user.profilePicture;
+};
+
+export default { getUser, updateUser, updatePassword, addProfilePicture };

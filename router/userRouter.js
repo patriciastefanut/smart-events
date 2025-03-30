@@ -1,6 +1,8 @@
 import express from "express";
 import { body } from "express-validator";
+import upload from "../utils/multer.js";
 import userController from "../controller/userController.js";
+
 
 const router = express.Router();
 
@@ -31,5 +33,7 @@ router.patch(
   ],
   userController.updatePassword
 );
+
+router.post('/:userId/profile-picture', upload.single('image'), userController.addProfilePicture)
 
 export default router;
