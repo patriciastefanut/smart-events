@@ -39,9 +39,29 @@ const getAllEventsByUser = async (req, res, next) => {
   }
 };
 
+const updateEvent = async (req, res, next) => {
+  try {
+    const event = await eventService.updateEvent(req.user._id, req.params.eventId, req.body);
+    res.status(200).json({event});
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteEvent = async (req, res, next) => {
+  try {
+    await eventService.deleteEvent(req.user._id, req.params.eventId);
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+};
+
 export default {
   createEventPlanDraft,
   createEvent,
   getEvent,
   getAllEventsByUser,
+  updateEvent,
+  deleteEvent,
 };

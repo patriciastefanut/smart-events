@@ -10,5 +10,7 @@ router.post("/drafts", eventController.createEventPlanDraft);
 router.post("/", eventController.createEvent);
 router.get("/", eventController.getAllEventsByUser);
 router.get("/:eventId", eventController.getEvent);
+router.patch("/:eventId", eventController.updateEvent);
+router.delete("/:eventId", eventController.deleteEvent);
 
 export default router;

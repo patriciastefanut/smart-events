@@ -4,6 +4,7 @@ import Event from "../models/event.js";
 import EventPlanDraft from "../models/eventPlanDraft.js";
 import gpt from "../utils/gpt.js";
 import AppError from "../utils/AppError.js";
+import event from "../models/event.js";
 
 const getContent = (data) => `
 
@@ -103,4 +104,44 @@ const getEvent = async (userId, eventId) => {
 const getAllEventsByUser = async (userId) =>
   await Event.find({ createdBy: userId });
 
-export default { createEventPlanDraft, createEvent, getEvent, getAllEventsByUser };
+const updateEvent = async (userId, eventId, data) => {
+  const updated = await Event.findOneAndUpdate(
+    { _id: eventId, createdBy: userId },
+    {
+      $set: {
+        title: data.title,
+        type: data.type,
+        description: data.description,
+        from: data.from,
+        until: data.until,
+        guestCount: data.guestCount,
+        location: data.location,
+        budget: data.budget,
+        currency: data.currency,
+        schedule: data.schedule,
+        requiredStaff: data.requiredStaff,
+        notes: data.notes,
+      },
+    },
+    { new: true }
+  );
+
+  if (!updated) {
+    throw new AppError("Failed to update event", 400);
+  }
+
+  return updated;
+};
+
+const deleteEvent = async (userId, eventId) => {
+  await Event.findOneAndDelete({ _id: eventId, createdBy: userId });
+};
+
+export default {
+  createEventPlanDraft,
+  createEvent,
+  getEvent,
+  getAllEventsByUser,
+  deleteEvent,
+  updateEvent,
+};
