@@ -5,6 +5,7 @@ import connectToDb from "./db.js";
 
 import authRouter from "./router/authRouter.js";
 import userRouter from "./router/userRouter.js";
+import eventRouter from "./router/eventRouter.js";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.get("/test", (req, res) => {
 });
 app.use("/api", authRouter);
 app.use("/api/users", userRouter);
+app.use("/api/events", eventRouter);
 
 app.use((err, req, res, next) => {
   if (!err) next();
