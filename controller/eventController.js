@@ -21,4 +21,13 @@ const createEvent = async (req, res, next) => {
   }
 };
 
-export default { createEventPlanDraft, createEvent };
+const getEvent = async (req, res, next) => {
+  try {
+    const event = await eventService.getEvent(req.user._id, req.params.eventId);
+    res.status(200).json({ event });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { createEventPlanDraft, createEvent, getEvent };

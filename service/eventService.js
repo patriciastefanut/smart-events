@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Event from "../models/event.js";
 import EventPlanDraft from "../models/eventPlanDraft.js";
 import gpt from "../utils/gpt.js";
+import AppError from "../utils/AppError.js";
 
 const getContent = (data) => `
 
@@ -89,8 +90,14 @@ const createEvent = async (userId, data) => {
     requiredStaff: data.requiredStaff,
     notes: data.notes,
   });
-  
+
   return event;
 };
 
-export default { createEventPlanDraft, createEvent };
+const getEvent = async (userId, eventId) => {
+  const event = await Event.findOne({ _id: eventId, createdBy: userId });
+  if (!event) throw new AppError("Not found", 404);
+  return event;
+};
+
+export default { createEventPlanDraft, createEvent, getEvent };

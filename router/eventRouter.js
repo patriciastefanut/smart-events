@@ -8,5 +8,6 @@ router.use(authMiddleware);
 
 router.post("/drafts", eventController.createEventPlanDraft);
 router.post("/", eventController.createEvent);
+router.get('/:eventId', eventController.getEvent);
 
 export default router;
