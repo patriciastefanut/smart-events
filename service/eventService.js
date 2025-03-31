@@ -100,4 +100,7 @@ const getEvent = async (userId, eventId) => {
   return event;
 };
 
-export default { createEventPlanDraft, createEvent, getEvent };
+const getAllEventsByUser = async (userId) =>
+  await Event.find({ createdBy: userId });
+
+export default { createEventPlanDraft, createEvent, getEvent, getAllEventsByUser };
