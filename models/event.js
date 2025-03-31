@@ -4,12 +4,12 @@ const eventSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     type: { type: String, required: true },
-    decription: { type: String, required: true },
+    description: { type: String, required: true },
     from: { type: Date, required: true },
     until: { type: Date, required: true },
     guestCount: { type: Number, required: true },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    uuid: {type: String, required: true, unique: true},
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, //
+    uuid: { type: String, required: true, unique: true }, //
     location: {
       name: { type: String, required: true },
       address: { type: String, required: true },
@@ -22,6 +22,7 @@ const eventSchema = new mongoose.Schema(
       staff: { type: Number, required: true },
       miscellaneous: { type: Number, required: true },
     },
+    currency: { type: String, required: true },
     schedule: [
       {
         time: { type: Date, required: true },

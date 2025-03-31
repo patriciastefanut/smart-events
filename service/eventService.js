@@ -1,6 +1,7 @@
+import { v4 as uuidv4 } from "uuid";
+
 import Event from "../models/event.js";
 import EventPlanDraft from "../models/eventPlanDraft.js";
-import AppError from "../utils/AppError.js";
 import gpt from "../utils/gpt.js";
 
 const getContent = (data) => `
@@ -44,35 +45,52 @@ ${JSON.stringify({
 `;
 
 const createEventPlanDraft = async (userId, data) => {
-  try {
-    const input = {
-      eventType: data.eventType,
-      from: data.from,
-      until: data.until,
-      location: data.location,
-      guestCount: data.guestCount,
-      budget: data.budget,
-      currency: data.currency,
-      preferences: data.preferences,
-      vibe: data.vibe,
-      specialRequests: data.specialRequests,
-      notes: data.notes,
-    };
+  const input = {
+    eventType: data.eventType,
+    from: data.from,
+    until: data.until,
+    location: data.location,
+    guestCount: data.guestCount,
+    budget: data.budget,
+    currency: data.currency,
+    preferences: data.preferences,
+    vibe: data.vibe,
+    specialRequests: data.specialRequests,
+    notes: data.notes,
+  };
 
-    const content = getContent(input);
-    console.log(content);
-    const answer = await gpt(content);
-    console.log(answer);
-    const result = {
-      createdBy: userId,
-      input,
-      suggestion: { ...JSON.parse(answer), currency: data.currency },
-    };
+  const content = getContent(input);
+  console.log(content);
+  const answer = await gpt(content);
+  console.log(answer);
+  const result = {
+    createdBy: userId,
+    input,
+    suggestion: { ...JSON.parse(answer), currency: data.currency },
+  };
 
-    return await EventPlanDraft.create(result);
-  } catch (err) {
-    throw new AppError(err.message || "Failed to parse JSON", 500);
-  }
+  return await EventPlanDraft.create(result);
 };
 
-export default { createEventPlanDraft };
+const createEvent = async (userId, data) => {
+  const event = await Event.create({
+    createdBy: userId,
+    uuid: uuidv4(),
+    title: data.title,
+    type: data.type,
+    description: data.description,
+    from: data.from,
+    until: data.until,
+    guestCount: data.guestCount,
+    location: data.location,
+    budget: data.budget,
+    currency: data.currency,
+    schedule: data.schedule,
+    requiredStaff: data.requiredStaff,
+    notes: data.notes,
+  });
+  
+  return event;
+};
+
+export default { createEventPlanDraft, createEvent };
