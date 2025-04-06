@@ -118,7 +118,6 @@ const respondToInvitation = async (eventUUID, invitationUUID, data) => {
     respondBefore: formatDate(invitation.respondBefore),
   });
 
-
   return await invitation.save();
 };
 
@@ -150,4 +149,19 @@ const cancelInvitation = async (eventUUID, invitationUUID) => {
   await emailService.sendCancelInvitationMail(emailInfo);
 };
 
-export default { sendInvitations, respondToInvitation, cancelInvitation };
+const getInvitationsByEventAndOrganizer = async (eventId, organizerId) => {
+  const event = await eventService.getEventById(eventId);
+  console.log(event);
+  if (event.createdBy.toString() !== organizerId.toString()) {
+    throw new AppError("You are not the organizer of the event", 403);
+  }
+  const invitations = await Invitation.find({ event: eventId });
+  return invitations;
+};
+
+export default {
+  sendInvitations,
+  respondToInvitation,
+  cancelInvitation,
+  getInvitationsByEventAndOrganizer,
+};

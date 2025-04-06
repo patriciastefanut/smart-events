@@ -15,6 +15,7 @@ router.patch("/:eventId", eventController.updateEvent);
 router.delete("/:eventId", eventController.deleteEvent);
 
 router.post("/:eventId/invitations", invitationController.sendInvitations);
+router.get("/:eventId/invitations", invitationController.getInvitationsByEventAndOrganizer);
 router.post("/:eventUUID/invitations/:invitationUUID", invitationController.respondToInvitation);
 router.delete("/:eventUUID/invitations/:invitationUUID", invitationController.cancelInvitation);
 

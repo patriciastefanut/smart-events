@@ -40,4 +40,20 @@ const cancelInvitation = async (req, res, next) => {
   }
 };
 
-export default { sendInvitations, respondToInvitation, cancelInvitation };
+const getInvitationsByEventAndOrganizer = async (req, res, next) => {
+  try {
+    const eventId = req.params.eventId;
+    const organizerId = req.user._id;
+
+    const invitations =
+      await invitationService.getInvitationsByEventAndOrganizer(
+        eventId,
+        organizerId
+      );
+    res.status(200).json({ invitations });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { sendInvitations, respondToInvitation, cancelInvitation, getInvitationsByEventAndOrganizer };
