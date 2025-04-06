@@ -4,10 +4,7 @@ const getParticipantsByEvent = async (req, res, next) => {
   try {
     const eventId = req.params.eventId;
     const userId = req.user._id;
-    const participants = await participantService.getParticipantsByEvent(
-      eventId,
-      userId
-    );
+    const participants = await participantService.getParticipantsByEvent(eventId, userId);
     res.status(200).json({ participants });
   } catch (err) {
     next(err);
@@ -17,10 +14,7 @@ const getParticipantsByEvent = async (req, res, next) => {
 const getParticipantByIdAndEvent = async (req, res, next) => {
   try {
     const { participantId, eventId } = req.params;
-    const participant = await participantService.getParticipantByIdAndEvent(
-      participantId,
-      eventId
-    );
+    const participant = await participantService.getParticipantByIdAndEvent(participantId, eventId);
     res.status(200).json({ participant });
   } catch (err) {
     next(err);
@@ -31,12 +25,19 @@ const updateParticipant = async (req, res, next) => {
   try {
     const { participantId, eventId } = req.params;
     const data = req.body;
-    const participant = await participantService.updateParticipant(
-      participantId,
-      eventId,
-      data
-    );
+    const participant = await participantService.updateParticipant(participantId, eventId, data);
     res.status(200).json({ participant });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteParticipant = async (req, res, next) => {
+  try {
+    const { participantId, eventId } = req.params;
+
+    await participantService.deleteParticipant(participantId, eventId);
+    res.status(204).send();
   } catch (err) {
     next(err);
   }
@@ -46,4 +47,5 @@ export default {
   getParticipantsByEvent,
   getParticipantByIdAndEvent,
   updateParticipant,
+  deleteParticipant,
 };

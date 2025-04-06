@@ -59,9 +59,16 @@ const updateParticipant = async (id, eventId, data) => {
   participant.lastname = data.lastname || participant.lastname;
   participant.notes = data.notes || participant.notes;
   participant.dietaryRestrictions = data.dietaryRestrictions || participant.dietaryRestrictions;
-  participant.checkedIn = data.checkedIn || participant.checkedIn;
+  participant.checkedIn = data.checkedIn || false;
 
   return await participant.save();
+};
+
+const deletePartcipantByIdAndEvent = async (id, eventId) => {
+  await Participant.findOneAndDelete({ _id: id, event: eventId });
+  if (!deleted) {
+    throw new AppError("Failed to delete participant", 400);
+  }
 };
 
 export default {
@@ -70,5 +77,6 @@ export default {
   getParticipantByIdAndEvent,
   getParticipantByEventAndInvitation,
   deleteParticipant,
-  updateParticipant
+  updateParticipant,
+  deletePartcipantByIdAndEvent,
 };
