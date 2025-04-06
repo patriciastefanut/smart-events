@@ -9,8 +9,8 @@ const invitationSchema = new mongoose.Schema(
       enum: ["pending", "accepted", "declined"],
       default: "pending",
     },
-    token: { type: String, required: true },
-    sendAt: { type: Date, required: true },
+    uuid: { type: String, required: true },
+    sentAt: { type: Date, required: true },
     respondedAt: { type: Date, default: null },
   },
   {

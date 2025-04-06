@@ -95,7 +95,13 @@ const createEvent = async (userId, data) => {
   return event;
 };
 
-const getEvent = async (userId, eventId) => {
+const getEventById = async (eventId) => {
+  const event = await Event.findById(eventId);
+  if (!event) throw new AppError("Not found", 404);
+  return event;
+};
+
+const getEventByIdAndUser = async (userId, eventId) => {
   const event = await Event.findOne({ _id: eventId, createdBy: userId });
   if (!event) throw new AppError("Not found", 404);
   return event;
@@ -140,7 +146,8 @@ const deleteEvent = async (userId, eventId) => {
 export default {
   createEventPlanDraft,
   createEvent,
-  getEvent,
+  getEventById,
+  getEventByIdAndUser,
   getAllEventsByUser,
   deleteEvent,
   updateEvent,
