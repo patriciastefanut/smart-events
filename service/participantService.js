@@ -39,13 +39,23 @@ const getParticipantsByEvent = async (eventId, userId) => {
     throw new AppError("You are not the creator of this event.", 403);
   }
 
-  const participants = await Participant.find({event: eventId});
+  const participants = await Participant.find({ event: eventId });
   return participants;
+};
+
+const getParticipantByIdAndEvent = async (id, eventId) => {
+  const participant = await Participant.findOne({ _id: id, event: eventId });
+  if (!participant) {
+    throw new AppError("Participant not found", 404);
+  }
+
+  return participant;
 };
 
 export default {
   createParticipant,
+  getParticipantsByEvent,
+  getParticipantByIdAndEvent,
   getParticipantByEventAndInvitation,
   deleteParticipant,
-  getParticipantsByEvent,
 };

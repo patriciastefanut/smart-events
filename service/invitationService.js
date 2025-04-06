@@ -145,7 +145,8 @@ const cancelInvitation = async (eventUUID, invitationUUID) => {
   };
 
   await participantService.deleteParticipant(participant._id);
-
+  invitation.status = 'cancelled';
+  await invitation.save();
   await emailService.sendCancelInvitationMail(emailInfo);
 };
 

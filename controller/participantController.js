@@ -14,4 +14,17 @@ const getParticipantsByEvent = async (req, res, next) => {
   }
 };
 
-export default { getParticipantsByEvent };
+const getParticipantByIdAndEvent = async (req, res, next) => {
+  try {
+    const { participantId, eventId } = req.params;
+    const participant = await participantService.getParticipantByIdAndEvent(
+      participantId,
+      eventId
+    );
+    res.status(200).json({ participant });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { getParticipantsByEvent, getParticipantByIdAndEvent };

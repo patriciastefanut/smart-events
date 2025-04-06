@@ -24,5 +24,6 @@ router.delete("/:eventUUID/invitations/:invitationUUID", invitationController.ca
 
 // Participants
 router.get("/:eventId/participants", participantController.getParticipantsByEvent);
+router.get("/:eventId/participants/:participantId", participantController.getParticipantByIdAndEvent);
 
 export default router;
