@@ -41,4 +41,43 @@ const sendEmail = async (to, subject, htmlContent, textContent = "") => {
   }
 };
 
-export default sendEmail;
+const sendInvitationEmail = async (data) => {
+  const invitationLink = `http://localhost:4200/events/${data.eventUUID}/invitations/${data.invitationUUID}`;
+  const subject = `Invitation to "${data.eventTitle}"`;
+  const html = `
+  <p>Dear ${data.userFirstname},</p>
+
+  <p>You are invited to <b>${data.eventTitle}</b>.</p>
+  <p>Event will take place on ${data.eventFrom} at ${data.eventLocationName} in ${data.eventLocationAddress}.</p>
+
+  <p>Please click the link below to confirm or decline the participation before ${data.respondBefore} :</p>
+
+  <a href="${invitationLink}">${invitationLink}</a>
+
+  <p>Kind regards,</p>
+  <p>The organizers</p>
+  `;
+
+  await sendEmail(data.userEmail, subject, html);
+};
+
+const sendEventConfirmationMail = async (data) => {
+  const link = `http://localhost:4200/events/${data.eventUUID}/invitations/${data.invitationUUID}`;
+  const subject = `Invitation confirmation to "${data.eventTitle}"`;
+  const html = `
+  <p>Dear ${data.userFirstname},</p>
+
+  <p>You have confirmed your participation to <b>${data.eventTitle}</b>.</p>
+
+  <p>Please click the link below to cancel your participation before ${data.respondBefore} :</p>
+
+  <a href="${link}">${link}</a>
+
+  <p>Kind regards,</p>
+  <p>The organizers</p>
+  `;
+
+  await sendEmail(data.userEmail, subject, html);
+};
+
+export default { sendEmail, sendInvitationEmail, sendEventConfirmationMail };

@@ -1,36 +1,33 @@
 import { v4 as uuidv4 } from "uuid";
-import sendEmail from "./emailService.js";
+import emailService from "./emailService.js";
 import eventService from "./eventService.js";
 import Invitation from "../models/invitation.js";
 import AppError from "../utils/AppError.js";
+import participantService from "./participantService.js";
 
-const createInvitation = async (eventId, email) => {
+const formatDate = (date) =>
+  date.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+const createInvitation = async (data) => {
   return await Invitation.create({
-    event: eventId,
-    email: email,
+    event: data.eventId,
+    email: data.email,
     uuid: uuidv4(),
     sentAt: Date.now(),
+    respondBefore: data.respondBefore,
   });
 };
 
-const sendInvitationEmail = async (data) => {
-  const invitationLink = `http://localhost:4200/events/${data.eventUuid}/invitations/${data.invitationUuid}`;
-  const subject = `Invitation to "${data.eventTitle}"`;
-  const html = `
-  <p>Dear ${data.userFirstname},</p>
+const getInvitationByUUIDAndEvent = async (uuid, eventId) => {
+  const invitation = await Invitation.findOne({ uuid, event: eventId });
+  if (!invitation) throw new AppError("Invitation not found");
 
-  <p>You are invited to <b>${data.eventTitle}</b>.</p>
-  <p>Event will take place on ${data.eventFrom} at ${data.eventLocationName} in ${data.eventLocationAddress}.</p>
-
-  <p>Please click te link below to confirm or decline the participation at this event:</p>
-
-  <a href="${invitationLink}">${invitationLink}</a>
-
-  <p>Kind regards,</p>
-  <p>The organizers</p>
-  `;
-
-  await sendEmail(data.userEmail, subject, html);
+  return invitation;
 };
 
 const sendInvitations = async (eventId, userId, data) => {
@@ -44,22 +41,26 @@ const sendInvitations = async (eventId, userId, data) => {
 
   for (const contact of data.emails) {
     try {
-      const invitation = await createInvitation(eventId, contact.email);
-      await sendInvitationEmail({
-        eventUuid: event.uuid,
+      const invitation = await createInvitation({
+        eventId,
+        email: contact.email,
+        respondBefore: data.respondBefore,
+      });
+      await emailService.sendInvitationEmail({
+        eventUUID: event.uuid,
         eventTitle: event.title,
         eventFrom: event.from,
         eventLocationName: event.location.name,
         eventLocationAddress: event.location.address,
-        invitationUuid: invitation.uuid,
+        invitationUUID: invitation.uuid,
         userFirstname: contact.firstname,
         userEmail: contact.email,
+        respondBefore: formatDate(invitation.respondBefore),
       });
 
       invitations.push(invitation);
     } catch (err) {
-
-      if (err.message.startsWith('E11000')) {
+      if (err.message.startsWith("E11000")) {
         err.message = `Invitation to ${contact.email} already sent`;
       }
 
@@ -71,4 +72,34 @@ const sendInvitations = async (eventId, userId, data) => {
   return { invitations, errors };
 };
 
-export default { sendInvitations };
+const respondToInvitation = async (eventUUID, invitationUUID, data) => {
+  const event = await eventService.getEventByUUID(eventUUID);
+  const invitation = await getInvitationByUUIDAndEvent(
+    invitationUUID,
+    event._id
+  );
+
+  if (invitation.status !== "pending") {
+    throw new AppError(`Invitation already ${invitation.status}`, 400);
+  }
+
+  if (invitation.respondBefore <= Date.now()) {
+    throw new AppError("Too late to respond to invitation", 422);
+  }
+
+  const status = data.status;
+  if (status === "accepted") {
+    await participantService.createParticipant({
+      ...data,
+      email: invitation.email,
+      eventId: event._id,
+      invitationId: invitation._id,
+    });
+  }
+
+  invitation.status = status;
+  invitation.respondedAt = Date.now();
+  return await invitation.save();
+};
+
+export default { sendInvitations, respondToInvitation };

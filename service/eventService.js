@@ -97,13 +97,25 @@ const createEvent = async (userId, data) => {
 
 const getEventById = async (eventId) => {
   const event = await Event.findById(eventId);
-  if (!event) throw new AppError("Not found", 404);
+  if (!event) {
+    throw new AppError("Event not found", 404);
+  }
   return event;
 };
 
 const getEventByIdAndUser = async (userId, eventId) => {
   const event = await Event.findOne({ _id: eventId, createdBy: userId });
-  if (!event) throw new AppError("Not found", 404);
+  if (!event) {
+    throw new AppError("Event not found", 404);
+  }
+  return event;
+};
+
+const getEventByUUID = async (uuid) => {
+  const event = await Event.findOne({ uuid });
+  if (!event) {
+    throw new AppError("Event not found", 404);
+  }
   return event;
 };
 
@@ -147,6 +159,7 @@ export default {
   createEventPlanDraft,
   createEvent,
   getEventById,
+  getEventByUUID,
   getEventByIdAndUser,
   getAllEventsByUser,
   deleteEvent,

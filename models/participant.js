@@ -3,10 +3,11 @@ import mongoose from "mongoose";
 const participantSchema = new mongoose.Schema(
   {
     event: { type: mongoose.Schema.Types.ObjectId, ref: "Event" },
+    invitation: { type: mongoose.Schema.Types.ObjectId, ref: "Invitation" },
     email: { type: String, required: true },
     notes: { type: String, default: null },
     dietaryRestrictions: { type: String, default: null },
-    checkedIn: {type: Boolean, default: false},
+    checkedIn: { type: Boolean, default: false },
   },
   {
     timestamps: true,
