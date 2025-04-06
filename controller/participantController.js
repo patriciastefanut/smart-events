@@ -27,4 +27,23 @@ const getParticipantByIdAndEvent = async (req, res, next) => {
   }
 };
 
-export default { getParticipantsByEvent, getParticipantByIdAndEvent };
+const updateParticipant = async (req, res, next) => {
+  try {
+    const { participantId, eventId } = req.params;
+    const data = req.body;
+    const participant = await participantService.updateParticipant(
+      participantId,
+      eventId,
+      data
+    );
+    res.status(200).json({ participant });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default {
+  getParticipantsByEvent,
+  getParticipantByIdAndEvent,
+  updateParticipant,
+};

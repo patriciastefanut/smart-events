@@ -52,10 +52,23 @@ const getParticipantByIdAndEvent = async (id, eventId) => {
   return participant;
 };
 
+const updateParticipant = async (id, eventId, data) => {
+  const participant = await getParticipantByIdAndEvent(id, eventId);
+
+  participant.firstname = data.firstname || participant.firstname;
+  participant.lastname = data.lastname || participant.lastname;
+  participant.notes = data.notes || participant.notes;
+  participant.dietaryRestrictions = data.dietaryRestrictions || participant.dietaryRestrictions;
+  participant.checkedIn = data.checkedIn || participant.checkedIn;
+
+  return await participant.save();
+};
+
 export default {
   createParticipant,
   getParticipantsByEvent,
   getParticipantByIdAndEvent,
   getParticipantByEventAndInvitation,
   deleteParticipant,
+  updateParticipant
 };
