@@ -4,6 +4,7 @@ import eventService from "./eventService.js";
 import Invitation from "../models/invitation.js";
 import AppError from "../utils/AppError.js";
 import participantService from "./participantService.js";
+import invitation from "../models/invitation.js";
 
 const formatDate = (date) =>
   date.toLocaleDateString("en-US", {
@@ -17,6 +18,8 @@ const createInvitation = async (data) => {
   return await Invitation.create({
     event: data.eventId,
     email: data.email,
+    firstname: data.firstname,
+    lastname: data.lastname,
     uuid: uuidv4(),
     sentAt: Date.now(),
     respondBefore: data.respondBefore,
@@ -38,13 +41,13 @@ const sendInvitations = async (eventId, userId, data) => {
 
   const invitations = [];
   const errors = [];
-
-  for (const contact of data.emails) {
+  console.log(data.contacts);
+  for (const contact of data.contacts) {
     try {
       const invitation = await createInvitation({
         eventId,
-        email: contact.email,
         respondBefore: data.respondBefore,
+        ...contact,
       });
       await emailService.sendInvitationEmail({
         eventUUID: event.uuid,
@@ -91,15 +94,60 @@ const respondToInvitation = async (eventUUID, invitationUUID, data) => {
   if (status === "accepted") {
     await participantService.createParticipant({
       ...data,
-      email: invitation.email,
       eventId: event._id,
       invitationId: invitation._id,
+      email: invitation.email,
+      firstname: invitation.firstname,
+      lastname: invitation.lastname,
     });
   }
 
   invitation.status = status;
   invitation.respondedAt = Date.now();
+
+  await emailService.sendEventConfirmationMail({
+    eventUUID: event.uuid,
+    eventTitle: event.title,
+    eventFrom: event.from,
+    eventLocationName: event.location.name,
+    eventLocationAddress: event.location.address,
+    invitationUUID: invitation.uuid,
+    invitationStatus: invitation.status,
+    userFirstname: invitation.firstname,
+    userEmail: invitation.email,
+    respondBefore: formatDate(invitation.respondBefore),
+  });
+
+
   return await invitation.save();
 };
 
-export default { sendInvitations, respondToInvitation };
+const cancelInvitation = async (eventUUID, invitationUUID) => {
+  const event = await eventService.getEventByUUID(eventUUID);
+  const invitation = await getInvitationByUUIDAndEvent(
+    invitationUUID,
+    event._id
+  );
+
+  if (invitation.status !== "accepted") {
+    throw new AppError("Cannot cancel invitation", 400);
+  }
+
+  const participant =
+    await participantService.getParticipantByEventAndInvitation(
+      event._id,
+      invitation._id
+    );
+
+  const emailInfo = {
+    eventTitle: event.title,
+    userEmail: participant.email,
+    userFirstname: participant.firstname,
+  };
+
+  await participantService.deleteParticipant(participant._id);
+
+  await emailService.sendCancelInvitationMail(emailInfo);
+};
+
+export default { sendInvitations, respondToInvitation, cancelInvitation };

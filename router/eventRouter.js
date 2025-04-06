@@ -16,5 +16,6 @@ router.delete("/:eventId", eventController.deleteEvent);
 
 router.post("/:eventId/invitations", invitationController.sendInvitations);
 router.post("/:eventUUID/invitations/:invitationUUID", invitationController.respondToInvitation);
+router.delete("/:eventUUID/invitations/:invitationUUID", invitationController.cancelInvitation);
 
 export default router;

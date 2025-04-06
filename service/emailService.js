@@ -13,8 +13,6 @@ const sendEmail = async (to, subject, htmlContent, textContent = "") => {
   const email = process.env.EMAIL_USER;
   const password = process.env.EMAIL_PASS;
 
-  console.log(email);
-
   const mailOptions = {
     from: email,
     to: to,
@@ -67,11 +65,14 @@ const sendEventConfirmationMail = async (data) => {
   const html = `
   <p>Dear ${data.userFirstname},</p>
 
-  <p>You have confirmed your participation to <b>${data.eventTitle}</b>.</p>
+  <p>You have ${data.invitationStatus} your participation to <b>${data.eventTitle}</b>.</p>
 
   <p>Please click the link below to cancel your participation before ${data.respondBefore} :</p>
 
   <a href="${link}">${link}</a>
+
+  Notes: "${data.notes}"
+  Dietary restrictions: "${data.dietaryRestrictions}"
 
   <p>Kind regards,</p>
   <p>The organizers</p>
@@ -80,4 +81,23 @@ const sendEventConfirmationMail = async (data) => {
   await sendEmail(data.userEmail, subject, html);
 };
 
-export default { sendEmail, sendInvitationEmail, sendEventConfirmationMail };
+const sendCancelInvitationMail = async (data) => {
+  const subject = `Invitation cancelling to "${data.eventTitle}"`;
+  const html = `
+  <p>Dear ${data.userFirstname},</p>
+
+  <p>You have cancalled your participation to <b>${data.eventTitle}</b>.</p>
+
+  <p>Kind regards,</p>
+  <p>The organizers</p>
+  `;
+
+  await sendEmail(data.userEmail, subject, html);
+};
+
+export default {
+  sendEmail,
+  sendInvitationEmail,
+  sendEventConfirmationMail,
+  sendCancelInvitationMail,
+};

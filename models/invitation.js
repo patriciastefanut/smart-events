@@ -4,6 +4,8 @@ const invitationSchema = new mongoose.Schema(
   {
     event: { type: mongoose.Schema.Types.ObjectId, ref: "Event" },
     email: { type: String, required: true },
+    firstname: { type: String, required: true },
+    lastname: { type: String, required: true },
     status: {
       type: String,
       enum: ["pending", "accepted", "declined", "cancelled"],
