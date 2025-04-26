@@ -7,7 +7,13 @@ import feedbackController from "../controller/feedbackController.js";
 
 const router = express.Router();
 
+// Feedbacks
+router.post("/:eventId/feedbacks", feedbackController.createFeedback);
+router.get("/:eventId/feedbacks/:uuid", feedbackController.getFeedback);
+
 router.use(authMiddleware);
+router.get("/:eventId/feedbacks", feedbackController.getAllFeedbacks);
+
 
 // Events
 router.post("/drafts", eventController.createEventPlanDraft);
@@ -29,8 +35,6 @@ router.get("/:eventId/participants/:participantId", participantController.getPar
 router.patch("/:eventId/participants/:participantId", participantController.updateParticipant);
 router.delete("/:eventId/participants/:participantId", participantController.deleteParticipant);
 
-// Feedbacks
-router.get("/:eventId/feedbacks", feedbackController.getAllFeedbacks);
-router.get("/:eventId/feedbacks/:email", feedbackController.getFeedback);
+
 
 export default router;

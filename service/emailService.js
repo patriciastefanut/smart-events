@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import feedback from "../models/feedback";
 
 /**
  * Send an HTML email asynchronously
@@ -95,9 +96,29 @@ const sendCancelInvitationMail = async (data) => {
   await sendEmail(data.userEmail, subject, html);
 };
 
+const sendFeedbackConfirm = async (data) => {
+  const subject = `Feedback to "${data.eventTitle}"`;
+  const html = `
+  <p>Dear ${data.userFirstname},</p>
+
+  <p>Thank you for your feedback for the <b>${data.eventTitle}</b> event.</p>
+
+  <p>Rating: ${data.feedback.rating}</p>
+  ${data.feedback.comment ? '<p>Summary:</p>"' + data.feedback.comment + '"' : ""}
+ 
+  You can edit/delete it <a href="https://localhost:3000/events/feedbacks/${data.feedback.uuid}}">here</a>
+
+  <p>Kind regards,</p>
+  <p>The organizers</p>
+  `;
+
+  await sendEmail(data.userEmail, subject, html);
+};
+
 export default {
   sendEmail,
   sendInvitationEmail,
   sendEventConfirmationMail,
   sendCancelInvitationMail,
+  sendFeedbackConfirm,
 };

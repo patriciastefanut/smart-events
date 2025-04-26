@@ -52,6 +52,15 @@ const getParticipantByIdAndEvent = async (id, eventId) => {
   return participant;
 };
 
+const getParticipantByEmailAndEvent = async (email, eventId) => {
+  const participant = await Participant.findOne({ email, event: eventId });
+  if (!participant) {
+    throw new AppError("Participant not found", 404);
+  }
+
+  return participant;
+};
+
 const updateParticipant = async (id, eventId, data) => {
   const participant = await getParticipantByIdAndEvent(id, eventId);
 
@@ -75,6 +84,7 @@ export default {
   createParticipant,
   getParticipantsByEvent,
   getParticipantByIdAndEvent,
+  getParticipantByEmailAndEvent,
   getParticipantByEventAndInvitation,
   deleteParticipant,
   updateParticipant,
