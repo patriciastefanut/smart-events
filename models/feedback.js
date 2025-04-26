@@ -14,4 +14,4 @@ const feedbackSchema = new mongoose.Schema(
 
 feedbackSchema.index({ event: -1, email: 1 }, { unique: true });
 
-export default mongoose.model("Invitation", feedbackSchema);
+export default mongoose.model("Feedback", feedbackSchema);

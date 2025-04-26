@@ -3,6 +3,7 @@ import authMiddleware from "../middleware/authMiddleware.js";
 import eventController from "../controller/eventController.js";
 import invitationController from "../controller/invitationController.js";
 import participantController from "../controller/participantController.js";
+import feedbackController from "../controller/feedbackController.js";
 
 const router = express.Router();
 
@@ -27,5 +28,8 @@ router.get("/:eventId/participants", participantController.getParticipantsByEven
 router.get("/:eventId/participants/:participantId", participantController.getParticipantByIdAndEvent);
 router.patch("/:eventId/participants/:participantId", participantController.updateParticipant);
 router.delete("/:eventId/participants/:participantId", participantController.deleteParticipant);
+
+// Feedbacks
+router.get("/:eventId/feedbacks/:email", feedbackController.getFeedback);
 
 export default router;
