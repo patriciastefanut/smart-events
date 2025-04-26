@@ -30,6 +30,7 @@ router.patch("/:eventId/participants/:participantId", participantController.upda
 router.delete("/:eventId/participants/:participantId", participantController.deleteParticipant);
 
 // Feedbacks
+router.get("/:eventId/feedbacks", feedbackController.getAllFeedbacks);
 router.get("/:eventId/feedbacks/:email", feedbackController.getFeedback);
 
 export default router;
