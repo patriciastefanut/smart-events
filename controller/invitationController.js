@@ -1,13 +1,10 @@
+import invitationDto from "../dto/invitationDto.js";
 import invitationService from "../service/invitationService.js";
 
 const sendInvitations = async (req, res, next) => {
-  const { invitations, errors } = await invitationService.sendInvitations(
-    req.params.eventId,
-    req.user._id,
-    req.body
-  );
-  res.status(201).json({ invitations, errors });
   try {
+    const { invitations, errors } = await invitationService.sendInvitations(req.params.eventId, req.user._id, req.body);
+    res.status(201).json({ invitations: invitations.map(invitationDto), errors });
   } catch (err) {
     next(err);
   }
@@ -18,13 +15,9 @@ const respondToInvitation = async (req, res, next) => {
     const { eventUUID, invitationUUID } = req.params;
     const data = req.body;
 
-    const invitation = await invitationService.respondToInvitation(
-      eventUUID,
-      invitationUUID,
-      data
-    );
+    const invitation = await invitationService.respondToInvitation(eventUUID, invitationUUID, data);
 
-    res.status(200).json({ invitation });
+    res.status(200).json({ invitation: invitationDto(invitation) });
   } catch (err) {
     next(err);
   }
@@ -45,12 +38,8 @@ const getInvitationsByEventAndOrganizer = async (req, res, next) => {
     const eventId = req.params.eventId;
     const organizerId = req.user._id;
 
-    const invitations =
-      await invitationService.getInvitationsByEventAndOrganizer(
-        eventId,
-        organizerId
-      );
-    res.status(200).json({ invitations });
+    const invitations = await invitationService.getInvitationsByEventAndOrganizer(eventId, organizerId);
+    res.status(200).json({ invitations: invitations.map(invitationDto) });
   } catch (err) {
     next(err);
   }

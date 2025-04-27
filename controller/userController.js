@@ -1,3 +1,4 @@
+import userDto from "../dto/userDto.js";
 import userService from "../service/userService.js";
 import AppError from "../utils/AppError.js";
 
@@ -7,7 +8,7 @@ const getUser = async (req, res, next) => {
 
     const user = await userService.getUser(userId);
     res.status(200).json({
-      user,
+      user: userDto(user),
     });
   } catch (err) {
     next(err);
@@ -19,7 +20,7 @@ const updateUser = async (req, res, next) => {
     const userId = req.params.userId;
     const user = await userService.updateUser(userId, req.body);
     res.status(200).json({
-      user,
+      user: userDto(user),
     });
   } catch (err) {
     next(err);
@@ -46,10 +47,7 @@ const addProfilePicture = async (req, res, next) => {
 
     const userId = req.params.userId;
 
-    const profilePicture = await userService.addProfilePicture(
-      userId,
-      req.file
-    );
+    const profilePicture = await userService.addProfilePicture(userId, req.file);
 
     res.status(200).json({
       profilePicture,

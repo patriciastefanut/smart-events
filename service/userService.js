@@ -16,7 +16,6 @@ const getUser = async (id) => {
   const user = await User.findById(id);
   if (!user) throw new AppError("User not found", 404);
 
-  user.password = undefined;
   return user;
 };
 
@@ -38,8 +37,6 @@ const updateUser = async (id, data) => {
   user.email = data.email || user.email;
 
   const updated = await user.save();
-
-  updated.password = undefined;
   return updated;
 };
 

@@ -1,9 +1,11 @@
+import eventDto from "../dto/eventDto.js";
+import eventPlanDraftDto from "../dto/eventPlanDraftDto.js";
 import eventService from "../service/eventService.js";
 
 const createEventPlanDraft = async (req, res, next) => {
   try {
     const eventDraft = await eventService.createEventPlanDraft(req.user._id, req.body);
-    res.status(201).json({ eventDraft });
+    res.status(201).json({ eventDraft: eventPlanDraftDto(eventDraft) });
   } catch (err) {
     next(err);
   }
@@ -12,7 +14,7 @@ const createEventPlanDraft = async (req, res, next) => {
 const createEvent = async (req, res, next) => {
   try {
     const event = await eventService.createEvent(req.user._id, req.body);
-    res.status(201).json({ event });
+    res.status(201).json({ event: eventDto(event) });
   } catch (err) {
     next(err);
   }
@@ -21,7 +23,7 @@ const createEvent = async (req, res, next) => {
 const getEventByIdAndOrganizer = async (req, res, next) => {
   try {
     const event = await eventService.getEventByIdAndOrganizer(req.params.eventId, req.user._id);
-    res.status(200).json({ event });
+    res.status(200).json({ event: eventDto(event) });
   } catch (err) {
     next(err);
   }
@@ -30,7 +32,7 @@ const getEventByIdAndOrganizer = async (req, res, next) => {
 const getAllEventsByUser = async (req, res, next) => {
   try {
     const events = await eventService.getAllEventsByUser(req.user._id);
-    res.status(200).json({ events });
+    res.status(200).json({ events: events.map(eventDto) });
   } catch (err) {
     next(err);
   }
@@ -39,7 +41,7 @@ const getAllEventsByUser = async (req, res, next) => {
 const updateEvent = async (req, res, next) => {
   try {
     const event = await eventService.updateEvent(req.user._id, req.params.eventId, req.body);
-    res.status(200).json({ event });
+    res.status(200).json({ event: eventDto(event) });
   } catch (err) {
     next(err);
   }
