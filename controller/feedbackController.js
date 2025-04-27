@@ -11,10 +11,10 @@ const getFeedback = async (req, res, next) => {
   }
 };
 
-const getAllFeedbacks = async (req, res, next) => {
+const getEventFeedbacks = async (req, res, next) => {
   try {
     const eventId = req.params.eventId;
-    const feedbacks = await feedbackService.getAllFeedbacks(eventId);
+    const feedbacks = await feedbackService.getEventFeedbacks(eventId);
     res.status(200).json({ feedbacks });
   } catch (err) {
     next(err);
@@ -53,4 +53,4 @@ const deleteFeedback = async (req, res, next) => {
   }
 };
 
-export default { getFeedback, getAllFeedbacks, createFeedback, updateFeedback, deleteFeedback };
+export default { getFeedback, getEventFeedbacks, createFeedback, updateFeedback, deleteFeedback };

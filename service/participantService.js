@@ -33,7 +33,7 @@ const deleteParticipant = async (participantId) => {
   }
 };
 
-const getParticipantsByEvent = async (eventId, userId) => {
+const getParticipantsByEventAndOrganizer = async (eventId, userId) => {
   const event = await eventService.getEventById(eventId);
   if (event.createdBy.toString() !== userId.toString()) {
     throw new AppError("You are not the creator of this event.", 403);
@@ -82,7 +82,7 @@ const deletePartcipantByIdAndEvent = async (id, eventId) => {
 
 export default {
   createParticipant,
-  getParticipantsByEvent,
+  getParticipantsByEventAndOrganizer,
   getParticipantByIdAndEvent,
   getParticipantByEmailAndEvent,
   getParticipantByEventAndInvitation,

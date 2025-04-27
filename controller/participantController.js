@@ -1,10 +1,10 @@
 import participantService from "../service/participantService.js";
 
-const getParticipantsByEvent = async (req, res, next) => {
+const getParticipantsByEventAndOrganizer = async (req, res, next) => {
   try {
     const eventId = req.params.eventId;
     const userId = req.user._id;
-    const participants = await participantService.getParticipantsByEvent(eventId, userId);
+    const participants = await participantService.getParticipantsByEventAndOrganizer(eventId, userId);
     res.status(200).json({ participants });
   } catch (err) {
     next(err);
@@ -44,7 +44,7 @@ const deleteParticipant = async (req, res, next) => {
 };
 
 export default {
-  getParticipantsByEvent,
+  getParticipantsByEventAndOrganizer,
   getParticipantByIdAndEvent,
   updateParticipant,
   deleteParticipant,

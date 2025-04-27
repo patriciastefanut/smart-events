@@ -17,8 +17,8 @@ const getFeedback = async (eventUUID, feedbackUUID) => {
   return feedback;
 };
 
-const getAllFeedbacks = async (eventId) => {
-  await eventService.getEventById(eventId);
+const getEventFeedbacks = async (eventId, userId) => {
+  await eventService.getEventByIdAndOrganizer(eventId, userId);
   const feedbacks = await Feedback.find({ event: eventId });
   return feedbacks;
 };
@@ -78,7 +78,7 @@ const deleteFeedback = async (eventUUID, feedbackUUID, data) => {
 
 export default {
   getFeedback,
-  getAllFeedbacks,
+  getEventFeedbacks,
   createFeedback,
   updateFeedback,
   deleteFeedback,

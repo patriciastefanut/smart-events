@@ -152,7 +152,6 @@ const cancelInvitation = async (eventUUID, invitationUUID) => {
 
 const getInvitationsByEventAndOrganizer = async (eventId, organizerId) => {
   const event = await eventService.getEventById(eventId);
-  console.log(event);
   if (event.createdBy.toString() !== organizerId.toString()) {
     throw new AppError("You are not the organizer of the event", 403);
   }

@@ -2,10 +2,7 @@ import eventService from "../service/eventService.js";
 
 const createEventPlanDraft = async (req, res, next) => {
   try {
-    const eventDraft = await eventService.createEventPlanDraft(
-      req.user._id,
-      req.body
-    );
+    const eventDraft = await eventService.createEventPlanDraft(req.user._id, req.body);
     res.status(201).json({ eventDraft });
   } catch (err) {
     next(err);
@@ -21,9 +18,9 @@ const createEvent = async (req, res, next) => {
   }
 };
 
-const getEventByIdAndUser = async (req, res, next) => {
+const getEventByIdAndOrganizer = async (req, res, next) => {
   try {
-    const event = await eventService.getEventByIdAndUser(req.user._id, req.params.eventId);
+    const event = await eventService.getEventByIdAndOrganizer(req.params.eventId, req.user._id);
     res.status(200).json({ event });
   } catch (err) {
     next(err);
@@ -42,7 +39,7 @@ const getAllEventsByUser = async (req, res, next) => {
 const updateEvent = async (req, res, next) => {
   try {
     const event = await eventService.updateEvent(req.user._id, req.params.eventId, req.body);
-    res.status(200).json({event});
+    res.status(200).json({ event });
   } catch (err) {
     next(err);
   }
@@ -57,11 +54,27 @@ const deleteEvent = async (req, res, next) => {
   }
 };
 
+const generateReport = async (req, res, next) => {
+  try {
+    const eventId = req.params.eventId;
+    const userId = req.user._id;
+
+    const buffer = await eventService.generateReport(eventId, userId);
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename="report-${eventId}.pdf"`);
+    return res.send(buffer);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export default {
   createEventPlanDraft,
   createEvent,
-  getEventByIdAndUser,
+  getEventByIdAndOrganizer,
   getAllEventsByUser,
   updateEvent,
   deleteEvent,
+  generateReport,
 };

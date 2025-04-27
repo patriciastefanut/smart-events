@@ -27,21 +27,24 @@ router.use(authMiddleware);
 router.post("/drafts", eventController.createEventPlanDraft);
 router.post("/", eventController.createEvent);
 router.get("/", eventController.getAllEventsByUser);
-router.get("/:eventId", eventController.getEventByIdAndUser);
+router.get("/:eventId", eventController.getEventByIdAndOrganizer);
 router.patch("/:eventId", eventController.updateEvent);
 router.delete("/:eventId", eventController.deleteEvent);
+
+// Report
+router.get("/:eventId/report", eventController.generateReport);
 
 // Invitations
 router.post("/:eventId/invitations", invitationController.sendInvitations);
 router.get("/:eventId/invitations", invitationController.getInvitationsByEventAndOrganizer);
 
 // Participants
-router.get("/:eventId/participants", participantController.getParticipantsByEvent);
+router.get("/:eventId/participants", participantController.getParticipantsByEventAndOrganizer);
 router.get("/:eventId/participants/:participantId", participantController.getParticipantByIdAndEvent);
 router.patch("/:eventId/participants/:participantId", participantController.updateParticipant);
 router.delete("/:eventId/participants/:participantId", participantController.deleteParticipant);
 
 // Feedback
-router.get("/:eventId/feedbacks", feedbackController.getAllFeedbacks);
+router.get("/:eventId/feedbacks", feedbackController.getEventFeedbacks);
 
 export default router;
