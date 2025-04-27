@@ -71,9 +71,15 @@ const updateFeedback = async (eventUUID, feedbackUUID, data) => {
   return await feedback.save();
 };
 
+const deleteFeedback = async (eventUUID, feedbackUUID, data) => {
+  const feedback = await getFeedback(eventUUID, feedbackUUID);
+  await feedback.deleteOne();
+};
+
 export default {
   getFeedback,
   getAllFeedbacks,
   createFeedback,
   updateFeedback,
+  deleteFeedback,
 };

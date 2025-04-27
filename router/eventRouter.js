@@ -13,6 +13,7 @@ const router = express.Router();
 router.post("/:eventUUID/feedbacks", feedbackController.createFeedback);
 router.get("/:eventUUID/feedbacks/:feedbackUUID", feedbackController.getFeedback);
 router.patch("/:eventUUID/feedbacks/:feedbackUUID", feedbackController.updateFeedback);
+router.delete("/:eventUUID/feedbacks/:feedbackUUID", feedbackController.deleteFeedback);
 
 // Invitations
 router.post("/:eventUUID/invitations/:invitationUUID", invitationController.respondToInvitation);

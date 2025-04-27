@@ -36,10 +36,21 @@ const updateFeedback = async (req, res, next) => {
     const eventUUID = req.params.eventUUID;
     const feedbackUUID = req.params.feedbackUUID;
     const feedback = await feedbackService.updateFeedback(eventUUID, feedbackUUID, req.body);
-    res.status(201).json({ feedback });
+    res.status(200).json({ feedback });
   } catch (err) {
     next(err);
   }
 };
 
-export default { getFeedback, getAllFeedbacks, createFeedback, updateFeedback };
+const deleteFeedback = async (req, res, next) => {
+  try {
+    const eventUUID = req.params.eventUUID;
+    const feedbackUUID = req.params.feedbackUUID;
+    await feedbackService.deleteFeedback(eventUUID, feedbackUUID);
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { getFeedback, getAllFeedbacks, createFeedback, updateFeedback, deleteFeedback };
