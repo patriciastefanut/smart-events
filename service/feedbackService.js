@@ -25,7 +25,7 @@ const getAllFeedbacks = async (eventId) => {
 
 const createFeedback = async (eventUUID, data) => {
   const event = await eventService.getEventByUUID(eventUUID);
-  const participant = await participantService.getParticipantByEmailAndEvent(data.email, event._id);
+  // const participant = await participantService.getParticipantByEmailAndEvent(data.email, event._id);
 
   const existing = await Feedback.findOne({ event: event._id, email: data.email });
   if (existing) {
@@ -42,9 +42,11 @@ const createFeedback = async (eventUUID, data) => {
 
   const emailInfo = {
     eventTitle: event.title,
-    userEmail: participant.email,
-    userFirstname: participant.firstname,
-    feedbackUrl: `https://localhost:4200/events/${eventUUID}feedbacks/${feedback.uuid}}`,
+    // userEmail: participant.email || data.email,
+    // userFirstname: participant.firstname || "Invited",
+    userEmail: data.email,
+    userFirstname: "TEST NAME",
+    feedbackUrl: `https://localhost:4200/events/${eventUUID}feedbacks/${feedback.uuid}`,
   };
 
   await emailService.sendFeedbackConfirm(emailInfo);
@@ -52,8 +54,26 @@ const createFeedback = async (eventUUID, data) => {
   return feedback;
 };
 
+const updateFeedback = async (eventUUID, feedbackUUID, data) => {
+  const feedback = await getFeedback(eventUUID, feedbackUUID);
+
+  if (data.rating) {
+    feedback.rating = data.rating;
+  }
+  if (data.comment) {
+    feedback.comment = data.comment;
+  }
+
+  if (data.comment === null) {
+    feedback.comment = null;
+  }
+
+  return await feedback.save();
+};
+
 export default {
   getFeedback,
   getAllFeedbacks,
   createFeedback,
+  updateFeedback,
 };

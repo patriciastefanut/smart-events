@@ -31,4 +31,15 @@ const createFeedback = async (req, res, next) => {
   }
 };
 
-export default { getFeedback, getAllFeedbacks, createFeedback };
+const updateFeedback = async (req, res, next) => {
+  try {
+    const eventUUID = req.params.eventUUID;
+    const feedbackUUID = req.params.feedbackUUID;
+    const feedback = await feedbackService.updateFeedback(eventUUID, feedbackUUID, req.body);
+    res.status(201).json({ feedback });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { getFeedback, getAllFeedbacks, createFeedback, updateFeedback };

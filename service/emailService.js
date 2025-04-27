@@ -1,5 +1,4 @@
 import nodemailer from "nodemailer";
-import feedback from "../models/feedback";
 
 /**
  * Send an HTML email asynchronously
@@ -101,7 +100,7 @@ const sendFeedbackConfirm = async (data) => {
   const html = `
   <p>Dear ${data.userFirstname},</p>
 
-  <p>Thank you for your feedback for the <b>${data.eventTitle}</b> event.</p>
+  <p>Thank you for your feedback for the "<b>${data.eventTitle}</b>" event.</p>
   <p>You can view it <a href="${data.feedbackUrl}">here</a>.</p>
 
   <p>Kind regards,</p>

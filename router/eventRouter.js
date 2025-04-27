@@ -12,6 +12,7 @@ const router = express.Router();
 // Feedbacks
 router.post("/:eventUUID/feedbacks", feedbackController.createFeedback);
 router.get("/:eventUUID/feedbacks/:feedbackUUID", feedbackController.getFeedback);
+router.patch("/:eventUUID/feedbacks/:feedbackUUID", feedbackController.updateFeedback);
 
 // Invitations
 router.post("/:eventUUID/invitations/:invitationUUID", invitationController.respondToInvitation);
