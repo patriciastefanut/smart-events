@@ -14,6 +14,13 @@ await connectToDb(DB_USER, DB_PASSWORD, DB_NAME);
 
 const app = express();
 
+app.use(
+  cors({
+    origin: "http://localhost:4200",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use("/uploads", express.static("./uploads"));
