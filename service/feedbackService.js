@@ -6,9 +6,9 @@ import eventService from "./eventService.js";
 import participantService from "./participantService.js";
 import emailService from "./emailService.js";
 
-const getFeedback = async (eventId, uuid) => {
-  await eventService.getEventById(eventId);
-  const feedback = await Feedback.findOne({ event: eventId, uuid });
+const getFeedback = async (eventUUID, feedbackUUID) => {
+  const event = await eventService.getEventByUUID(eventUUID);
+  const feedback = await Feedback.findOne({ event: event._id, uuid: feedbackUUID });
 
   if (!feedback) {
     throw new AppError("Feedback not found", 404);
@@ -17,23 +17,23 @@ const getFeedback = async (eventId, uuid) => {
   return feedback;
 };
 
-const getAllFeedbacks = async (eventId, email) => {
+const getAllFeedbacks = async (eventId) => {
   await eventService.getEventById(eventId);
   const feedbacks = await Feedback.find({ event: eventId });
   return feedbacks;
 };
 
-const createFeedback = async (eventId, data) => {
-  const event = await eventService.getEventById(eventId);
-  const participant = await participantService.getParticipantByEmailAndEvent(data.email, eventId);
+const createFeedback = async (eventUUID, data) => {
+  const event = await eventService.getEventByUUID(eventUUID);
+  const participant = await participantService.getParticipantByEmailAndEvent(data.email, event._id);
 
-  const existing = await Feedback.findOne({ event: eventId, email: data.email });
+  const existing = await Feedback.findOne({ event: event._id, email: data.email });
   if (existing) {
     throw new AppError(`Participant already gave feedback`, 422);
   }
 
   const feedback = await Feedback.create({
-    event: eventId,
+    event: event._id,
     uuid: uuidv4(),
     email: data.email,
     rating: data.raing,
@@ -44,7 +44,7 @@ const createFeedback = async (eventId, data) => {
     eventTitle: event.title,
     userEmail: participant.email,
     userFirstname: participant.firstname,
-    feedback,
+    feedbackUrl: `https://localhost:4200/events/${eventUUID}feedbacks/${feedback.uuid}}`,
   };
 
   await emailService.sendFeedbackConfirm(emailInfo);

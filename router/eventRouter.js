@@ -7,13 +7,19 @@ import feedbackController from "../controller/feedbackController.js";
 
 const router = express.Router();
 
+// Public routes
+
 // Feedbacks
-router.post("/:eventId/feedbacks", feedbackController.createFeedback);
-router.get("/:eventId/feedbacks/:uuid", feedbackController.getFeedback);
+router.post("/:eventUUID/feedbacks", feedbackController.createFeedback);
+router.get("/:eventUUID/feedbacks/:feedbackUUID", feedbackController.getFeedback);
+
+// Invitations
+router.post("/:eventUUID/invitations/:invitationUUID", invitationController.respondToInvitation);
+router.delete("/:eventUUID/invitations/:invitationUUID", invitationController.cancelInvitation);
+
+// Private routes
 
 router.use(authMiddleware);
-router.get("/:eventId/feedbacks", feedbackController.getAllFeedbacks);
-
 
 // Events
 router.post("/drafts", eventController.createEventPlanDraft);
@@ -26,8 +32,6 @@ router.delete("/:eventId", eventController.deleteEvent);
 // Invitations
 router.post("/:eventId/invitations", invitationController.sendInvitations);
 router.get("/:eventId/invitations", invitationController.getInvitationsByEventAndOrganizer);
-router.post("/:eventUUID/invitations/:invitationUUID", invitationController.respondToInvitation);
-router.delete("/:eventUUID/invitations/:invitationUUID", invitationController.cancelInvitation);
 
 // Participants
 router.get("/:eventId/participants", participantController.getParticipantsByEvent);
@@ -35,6 +39,7 @@ router.get("/:eventId/participants/:participantId", participantController.getPar
 router.patch("/:eventId/participants/:participantId", participantController.updateParticipant);
 router.delete("/:eventId/participants/:participantId", participantController.deleteParticipant);
 
-
+// Feedback
+router.get("/:eventId/feedbacks", feedbackController.getAllFeedbacks);
 
 export default router;

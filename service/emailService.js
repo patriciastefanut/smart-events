@@ -102,11 +102,7 @@ const sendFeedbackConfirm = async (data) => {
   <p>Dear ${data.userFirstname},</p>
 
   <p>Thank you for your feedback for the <b>${data.eventTitle}</b> event.</p>
-
-  <p>Rating: ${data.feedback.rating}</p>
-  ${data.feedback.comment ? '<p>Summary:</p>"' + data.feedback.comment + '"' : ""}
- 
-  You can edit/delete it <a href="https://localhost:3000/events/feedbacks/${data.feedback.uuid}}">here</a>
+  <p>You can view it <a href="${data.feedbackUrl}">here</a>.</p>
 
   <p>Kind regards,</p>
   <p>The organizers</p>
