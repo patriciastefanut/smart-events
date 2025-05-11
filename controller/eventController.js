@@ -1,11 +1,10 @@
 import eventDto from "../dto/eventDto.js";
-import eventPlanDraftDto from "../dto/eventPlanDraftDto.js";
 import eventService from "../service/eventService.js";
 
-const createEventPlanDraft = async (req, res, next) => {
+const aiGenerateEvent = async (req, res, next) => {
   try {
-    const eventDraft = await eventService.createEventPlanDraft(req.user._id, req.body);
-    res.status(201).json({ eventDraft: eventPlanDraftDto(eventDraft) });
+    const event = await eventService.aiGenerateEvent(req.user._id, req.body);
+    res.status(201).json({ event: eventDto(event) });
   } catch (err) {
     next(err);
   }
@@ -72,7 +71,7 @@ const generateReport = async (req, res, next) => {
 };
 
 export default {
-  createEventPlanDraft,
+  aiGenerateEvent,
   createEvent,
   getEventByIdAndOrganizer,
   getAllEventsByUser,

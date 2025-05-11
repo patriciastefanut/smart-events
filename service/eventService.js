@@ -3,7 +3,6 @@ import PDFDocument from "pdfkit";
 import AppError from "../utils/AppError.js";
 import gpt from "../utils/gpt.js";
 import Event from "../models/event.js";
-import EventPlanDraft from "../models/eventPlanDraft.js";
 import invitationService from "./invitationService.js";
 import participantService from "./participantService.js";
 import feedbackService from "./feedbackService.js";
@@ -23,13 +22,11 @@ ${JSON.stringify({
   from: "Date",
   until: "Date",
   guestCount: "Number",
-  locations: [
-    {
-      name: "String",
-      address: "String",
-      cost: "Number",
-    },
-  ],
+  location: {
+    name: "String",
+    address: "String",
+    cost: "Number",
+  },
   budget: {
     venue: "Number",
     catering: "Number",
@@ -37,6 +34,7 @@ ${JSON.stringify({
     staff: "Number",
     miscellaneous: "Number",
   },
+  currency: "String",
   schedule: [
     {
       time: "Date",
@@ -48,7 +46,7 @@ ${JSON.stringify({
 })}
 `;
 
-const createEventPlanDraft = async (userId, data) => {
+const aiGenerateEvent = async (userId, data) => {
   const input = {
     eventType: data.eventType,
     from: data.from,
@@ -66,13 +64,8 @@ const createEventPlanDraft = async (userId, data) => {
   const content = getContent(input);
   const answer = await gpt(content);
 
-  const result = {
-    createdBy: userId,
-    input,
-    suggestion: { ...JSON.parse(answer), currency: data.currency },
-  };
-
-  return await EventPlanDraft.create(result);
+  const result = { ...JSON.parse(answer), createdBy: userId, uuid: uuidv4(), currency: data.currency };
+  return await Event.create(result);
 };
 
 const createEvent = async (userId, data) => {
@@ -279,7 +272,7 @@ const generateReport = async (eventId, userId) => {
 };
 
 export default {
-  createEventPlanDraft,
+  aiGenerateEvent,
   createEvent,
   getEventById,
   getEventByUUID,

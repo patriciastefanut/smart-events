@@ -24,7 +24,7 @@ router.delete("/:eventUUID/invitations/:invitationUUID", invitationController.ca
 router.use(authMiddleware);
 
 // Events
-router.post("/drafts", eventController.createEventPlanDraft);
+router.post("/ai", eventController.aiGenerateEvent);
 router.post("/", eventController.createEvent);
 router.get("/", eventController.getAllEventsByUser);
 router.get("/:eventId", eventController.getEventByIdAndOrganizer);
