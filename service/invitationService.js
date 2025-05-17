@@ -4,7 +4,6 @@ import eventService from "./eventService.js";
 import Invitation from "../models/invitation.js";
 import AppError from "../utils/AppError.js";
 import participantService from "./participantService.js";
-import invitation from "../models/invitation.js";
 
 const formatDate = (date) =>
   date.toLocaleDateString("en-US", {
@@ -36,8 +35,7 @@ const getInvitationByUUIDAndEvent = async (uuid, eventId) => {
 const sendInvitations = async (eventId, userId, data) => {
   const event = await eventService.getEventById(eventId);
 
-  if (event.createdBy.toString() !== userId.toString())
-    throw new AppError("You are not the organizer of this event", 403);
+  if (event.createdBy.toString() !== userId.toString()) throw new AppError("You are not the organizer of this event", 403);
 
   const invitations = [];
   const errors = [];
@@ -77,10 +75,7 @@ const sendInvitations = async (eventId, userId, data) => {
 
 const respondToInvitation = async (eventUUID, invitationUUID, data) => {
   const event = await eventService.getEventByUUID(eventUUID);
-  const invitation = await getInvitationByUUIDAndEvent(
-    invitationUUID,
-    event._id
-  );
+  const invitation = await getInvitationByUUIDAndEvent(invitationUUID, event._id);
 
   if (invitation.status !== "pending") {
     throw new AppError(`Invitation already ${invitation.status}`, 400);
@@ -123,20 +118,13 @@ const respondToInvitation = async (eventUUID, invitationUUID, data) => {
 
 const cancelInvitation = async (eventUUID, invitationUUID) => {
   const event = await eventService.getEventByUUID(eventUUID);
-  const invitation = await getInvitationByUUIDAndEvent(
-    invitationUUID,
-    event._id
-  );
+  const invitation = await getInvitationByUUIDAndEvent(invitationUUID, event._id);
 
   if (invitation.status !== "accepted") {
     throw new AppError("Cannot cancel invitation", 400);
   }
 
-  const participant =
-    await participantService.getParticipantByEventAndInvitation(
-      event._id,
-      invitation._id
-    );
+  const participant = await participantService.getParticipantByEventAndInvitation(event._id, invitation._id);
 
   const emailInfo = {
     eventTitle: event.title,
@@ -145,7 +133,7 @@ const cancelInvitation = async (eventUUID, invitationUUID) => {
   };
 
   await participantService.deleteParticipant(participant._id);
-  invitation.status = 'cancelled';
+  invitation.status = "cancelled";
   await invitation.save();
   await emailService.sendCancelInvitationMail(emailInfo);
 };
@@ -159,9 +147,22 @@ const getInvitationsByEventAndOrganizer = async (eventId, organizerId) => {
   return invitations;
 };
 
+const getInvitationByEventUUID = async (invitationUUID, eventUUID) => {
+  console.log(invitationUUID, eventUUID);
+  const event = await eventService.getEventByUUID(eventUUID);
+  console.log(event._id);
+  const invitation = await Invitation.findOne({ event: event._id, uuid: invitationUUID });
+  console.log(invitation);
+  if (!invitation) {
+    throw new AppError("Invitation not found", 404);
+  }
+  return invitation;
+};
+
 export default {
   sendInvitations,
   respondToInvitation,
   cancelInvitation,
   getInvitationsByEventAndOrganizer,
+  getInvitationByEventUUID,
 };

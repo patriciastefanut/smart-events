@@ -16,6 +16,7 @@ router.patch("/:eventUUID/feedbacks/:feedbackUUID", feedbackController.updateFee
 router.delete("/:eventUUID/feedbacks/:feedbackUUID", feedbackController.deleteFeedback);
 
 // Invitations
+router.get("/:eventUUID/invitations/:invitationUUID", invitationController.getInvitationByEventUUID);
 router.post("/:eventUUID/invitations/:invitationUUID", invitationController.respondToInvitation);
 router.delete("/:eventUUID/invitations/:invitationUUID", invitationController.cancelInvitation);
 

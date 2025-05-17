@@ -45,4 +45,17 @@ const getInvitationsByEventAndOrganizer = async (req, res, next) => {
   }
 };
 
-export default { sendInvitations, respondToInvitation, cancelInvitation, getInvitationsByEventAndOrganizer };
+const getInvitationByEventUUID = async (req, res, next) => {
+  try {
+    const eventUUID = req.params.eventUUID;
+    const invitationUUID = req.params.invitationUUID;
+
+    const invitation = await invitationService.getInvitationByEventUUID(invitationUUID, eventUUID);
+
+    res.status(200).json({invitation: invitationDto(invitation)});
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { sendInvitations, respondToInvitation, cancelInvitation, getInvitationsByEventAndOrganizer, getInvitationByEventUUID };
