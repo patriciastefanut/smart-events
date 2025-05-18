@@ -4,6 +4,7 @@ import eventController from "../controller/eventController.js";
 import invitationController from "../controller/invitationController.js";
 import participantController from "../controller/participantController.js";
 import feedbackController from "../controller/feedbackController.js";
+import spendingController from "../controller/spendingController.js";
 
 const router = express.Router();
 
@@ -45,7 +46,14 @@ router.get("/:eventId/participants/:participantId", participantController.getPar
 router.patch("/:eventId/participants/:participantId", participantController.updateParticipant);
 router.delete("/:eventId/participants/:participantId", participantController.deleteParticipant);
 
-// Feedback
+// Feedbacks
 router.get("/:eventId/feedbacks", feedbackController.getEventFeedbacks);
+
+// Spendings
+router.get("/:eventId/spendings", spendingController.getSpendingsByEventAndOrganizer);
+router.get("/:eventId/spendings/:spendingId", spendingController.getSpendingById);
+router.post("/:eventId/spendings", spendingController.createSpending);
+router.patch("/:eventId/spendings/:spendingId", spendingController.updateSpending);
+router.delete("/:eventId/spendings/:spendingId", spendingController.deleteSpendingByIdAndEvent);
 
 export default router;
